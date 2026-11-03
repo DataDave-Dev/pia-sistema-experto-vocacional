@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 
 export const EQUIPO = {
   materia: 'SEMINARIO DE SISTEMAS M1',
-  catedratico: '[NOMBRE DEL CATEDRÁTICO]',
+  catedratico: 'BLANCA IDALIA PEREZ PEREZ',
   equipo: '[#]',
   periodo: 'AGOSTO – DICIEMBRE 2026',
   fecha: '5 DE NOVIEMBRE DE 2026',
