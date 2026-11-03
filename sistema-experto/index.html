@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema Experto Vocacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="kicker">PIA · Sistema experto</span>
+    <h1>Orientación vocacional</h1>
+    <p>Árbol de decisión, reglas SI-ENTONCES, búsqueda exhaustiva y heurística, flujo máximo y aprendizaje.</p>
+  </div>
+  <nav class="tabs" aria-label="Módulos">
+    <button data-tab="cuestionario" class="active">1 · Cuestionario</button>
+    <button data-tab="diagnostico" disabled>2 · Diagnóstico</button>
+    <button data-tab="arbol">3 · Árbol de decisión</button>
+    <button data-tab="busqueda" disabled>4 · Búsqueda</button>
+    <button data-tab="cupos">5 · Cupos (flujo)</button>
+    <button data-tab="aprendizaje">6 · Aprendizaje</button>
+    <button data-tab="conocimiento">7 · Base de conocimiento</button>
+  </nav>
+</header>
+
+<main>
+  <section id="cuestionario" class="panel active">
+    <div class="intro">
+      <h2>¿Qué tanto te describe cada afirmación?</h2>
+      <p>1 = nada · 5 = totalmente. El sistema convierte tus respuestas en un perfil de 8 dimensiones.</p>
+    </div>
+    <form id="form" novalidate>
+      <ol id="questions" class="questions"></ol>
+      <p id="formError" class="error" role="alert"></p>
+      <div class="actions">
+        <button type="button" id="btnSample" class="ghost">Respuestas de ejemplo</button>
+        <button type="reset" class="ghost">Limpiar</button>
+        <button type="submit" class="primary">Evaluar perfil →</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="diagnostico" class="panel"></section>
+
+  <section id="arbol" class="panel">
+    <div class="intro">
+      <h2>Árbol de decisión</h2>
+      <p>Cada nodo pregunta si una dimensión del perfil supera un umbral. Se resalta el camino recorrido con tu perfil.</p>
+    </div>
+    <div class="scroll"><div id="treeBox"></div></div>
+    <div id="pathBox"></div>
+    <h3>Recorridos del árbol</h3>
+    <div id="travBox" class="trav"></div>
+  </section>
+
+  <section id="busqueda" class="panel"></section>
+
+  <section id="cupos" class="panel">
+    <div class="intro">
+      <h2>Asignación de cupos · Flujo máximo</h2>
+      <p>Red: fuente → alumno (capacidad 1) → carrera compatible (capacidad 1) → sumidero (capacidad = cupos).
+        Edmonds-Karp encuentra el flujo máximo; por el teorema de flujo máximo y corte mínimo, su valor es igual a la capacidad del corte mínimo.</p>
+    </div>
+    <div class="flowctl">
+      <label>Compatibilidad mínima: <strong id="minCompatOut">80%</strong>
+        <input type="range" id="minCompat" min="60" max="95" value="80"></label>
+      <button type="button" id="btnFlow" class="primary">Asignar cupos</button>
+    </div>
+    <div id="seats" class="seats"></div>
+    <div id="flowOut"></div>
+  </section>
+
+  <section id="aprendizaje" class="panel">
+    <div class="intro">
+      <h2>Aprendizaje (LVQ)</h2>
+      <p>Cada carrera tiene un prototipo (vector de afinidades). Con retroalimentación, el prototipo correcto se acerca al perfil del alumno
+        y el incorrecto se aleja: <code>w ← w ± α (x − w)</code>. Los prototipos aprendidos alimentan la búsqueda y el ranking.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Retroalimentación del usuario</h3>
+        <div id="feedback"><p class="muted">Primero evalúa tu perfil en el cuestionario.</p></div>
+      </div>
+      <div class="card">
+        <h3>Simulación con egresados</h3>
+        <p class="muted">Se generan 128 perfiles de egresados reales que difieren del conocimiento inicial del experto.
+          Se mide la exactitud del sistema en cada época de entrenamiento.</p>
+        <div class="actions">
+          <button type="button" id="btnSim" class="primary">Simular aprendizaje</button>
+          <button type="button" id="btnReset" class="ghost">Restablecer prototipos</button>
+        </div>
+        <div id="simOut"></div>
+      </div>
+    </div>
+    <div id="learnOut"></div>
+  </section>
+
+  <section id="conocimiento" class="panel"></section>
+</main>
+
+<footer>Seminario de Sistemas · Agosto–Diciembre 2026</footer>
+
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
