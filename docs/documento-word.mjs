@@ -2,7 +2,8 @@
 // node docs/documento-word.mjs   (antes: node docs/presentacion.mjs para las figuras)
 // La portada conserva logos, formas y marco; solo se cambian sus textos. El contenido usa sus
 // mismos estilos (Título 1/2), colores (9BBA58, 76923C, EAF0DD, C2D59B) y el marco de página.
-import { readFileSync, writeFileSync, readdirSync, rmSync, mkdtempSync, copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, rmSync, mkdtempSync, copyFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -360,8 +361,21 @@ if (!settings.includes('<w:updateFields')) {
 const corePath = resolve(work, 'docProps/core.xml');
 writeFileSync(corePath, readFileSync(corePath, 'utf8').replace(/<dc:title>[^<]*<\/dc:title>/, '<dc:title>PIA Sistema Experto de Orientación Vocacional</dc:title>'));
 
-const out = resolve(DOCS, '../PIA_Sistema_Experto.docx');
+// Protección de ediciones manuales: se guarda la huella del último .docx generado. Si el archivo
+// actual no coincide (alguien lo editó en Word) o no hay huella, NO se sobrescribe: se genera
+// PIA_Sistema_Experto.generado.docx para copiar a mano lo que haga falta.
+const sha = file => createHash('sha256').update(readFileSync(file)).digest('hex');
+const main = resolve(DOCS, '../PIA_Sistema_Experto.docx');
+const hashFile = resolve(DOCS, '.docx-generado.sha256');
+const edited = existsSync(main) && (!existsSync(hashFile) || readFileSync(hashFile, 'utf8').trim() !== sha(main));
+const out = edited ? resolve(DOCS, '../PIA_Sistema_Experto.generado.docx') : main;
 rmSync(out, { force: true });
 execFileSync('zip', ['-X', '-q', '-r', out, '.'], { cwd: work });
 rmSync(work, { recursive: true, force: true });
-console.log('Listo: PIA_Sistema_Experto.docx');
+if (edited) {
+  console.log('PIA_Sistema_Experto.docx tiene ediciones manuales: NO se sobrescribió.');
+  console.log('Versión nueva en PIA_Sistema_Experto.generado.docx (copia lo que necesites, o bórrala).');
+} else {
+  writeFileSync(hashFile, sha(out) + '\n');
+  console.log('Listo: PIA_Sistema_Experto.docx');
+}

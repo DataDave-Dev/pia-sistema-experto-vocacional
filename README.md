@@ -9,3 +9,5 @@
 1. Editar `EQUIPO` en `docs/datos.mjs`.
 2. Si cambias la app: `node docs/capturas.mjs`
 3. `node docs/presentacion.mjs && node docs/documento-word.mjs` (requiere `chromium`, `pdftoppm`, `zip`).
+
+> Si `PIA_Sistema_Experto.docx` fue editado en Word, el script **no lo sobrescribe**: deja la versión nueva en `PIA_Sistema_Experto.generado.docx`.
