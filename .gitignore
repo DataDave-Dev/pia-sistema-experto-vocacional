@@ -2,3 +2,5 @@
 *.docx
 ~$*
 docs/
+.claude/
+CLAUDE.md
