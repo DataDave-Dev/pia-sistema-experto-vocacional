@@ -1,1 +1,4 @@
-PIA_Sistema_Experto.generado.docx
+# Solo se publica el código del sistema; documentos y material de entrega quedan locales.
+*.docx
+~$*
+docs/
